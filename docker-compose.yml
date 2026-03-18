@@ -25,6 +25,7 @@ services:
     build: ./simulator
     environment:
       API_URL: http://backend:8000
+      pythonunbuffered: 1
     depends_on:
       - backend
     volumes:
