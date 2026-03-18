@@ -1,0 +1,34 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: factory
+      POSTGRES_PASSWORD: factory123
+      POSTGRES_DB: factorydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://factory:factory123@db:5432/factorydb
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+
+  simulator:
+    build: ./simulator
+    environment:
+      API_URL: http://backend:8000
+    depends_on:
+      - backend
+    volumes:
+      - ./simulator:/app
+
+volumes:
+  postgres_data:
